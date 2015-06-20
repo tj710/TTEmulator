@@ -1,4 +1,5 @@
 #include "FWCore/Framework/interface/one/EDProducerBase.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 #include "EventFilter/L1TRawToDigi/interface/Packer.h"
 #include "EventFilter/L1TRawToDigi/interface/Unpacker.h"
@@ -14,6 +15,15 @@ namespace l1t {
          public:
             virtual std::unique_ptr<PackerTokens> registerConsumes(const edm::ParameterSet& cfg, edm::ConsumesCollector& cc) override {
                return std::unique_ptr<PackerTokens>(new CaloTokens(cfg, cc));
+            };
+
+            virtual void fillDescription(edm::ParameterSetDescription& desc) override {
+               desc.addOptional<edm::InputTag>("TauInputLabel")->setComment("for stage1");
+               desc.addOptional<edm::InputTag>("IsoTauInputLabel")->setComment("for stage1");
+               desc.addOptional<edm::InputTag>("HFBitCountsInputLabel")->setComment("for stage1");
+               desc.addOptional<edm::InputTag>("HFRingSumsInputLabel")->setComment("for stage1");
+               desc.addOptional<edm::InputTag>("RegionInputLabel")->setComment("for stage1");
+               desc.addOptional<edm::InputTag>("EmCandInputLabel")->setComment("for stage1");
             };
 
             virtual PackerMap getPackers(int fed, int fw) override {

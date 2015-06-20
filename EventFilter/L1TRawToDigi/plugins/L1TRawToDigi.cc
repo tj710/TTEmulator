@@ -83,19 +83,11 @@ std::ostream & operator<<(std::ostream& o, const l1t::BlockHeader& h) {
 
 namespace l1t {
    L1TRawToDigi::L1TRawToDigi(const edm::ParameterSet& config) :
+      fedIds_(config.getParameter<std::vector<int>>("FedIds")),
       fwId_(config.getUntrackedParameter<int>("FWId", -1)),
       ctp7_mode_(config.getUntrackedParameter<bool>("CTP7", false))
    {
       fedData_ = consumes<FEDRawDataCollection>(config.getParameter<edm::InputTag>("InputLabel"));
-
-      if (config.exists("FedId") and config.exists("FedIds")) {
-         throw edm::Exception(edm::errors::Configuration, "PSet")
-            << "Cannot have FedId and FedIds as parameter at the same time";
-      } else if (config.exists("FedId")) {
-         fedIds_ = {config.getParameter<int>("FedId")};
-      } else {
-         fedIds_ = config.getParameter<std::vector<int>>("FedIds");
-      }
 
       prov_ = PackingSetupFactory::get()->make(config.getParameter<std::string>("Setup"));
       prov_->registerProducts(*this);
@@ -250,11 +242,20 @@ namespace l1t {
    // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
    void
    L1TRawToDigi::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-     //The following says we do not know what parameters are allowed so do no validation
-     // Please change this to state exactly what you do use, even if it is no parameters
      edm::ParameterSetDescription desc;
-     desc.setUnknown();
-     descriptions.addDefault(desc);
+     desc.addUntracked<int>("FWId", -1);
+     desc.addUntracked<bool>("CTP7", false);
+     desc.add<edm::InputTag>("InputLabel");
+     desc.add<std::vector<int>>("FedIds", {});
+     desc.add<std::string>("Setup", "");
+     desc.addUntracked<int>("lenSlinkHeader", 8);
+     desc.addUntracked<int>("lenSlinkTrailer", 8);
+     desc.addUntracked<int>("lenAMCHeader", 8);
+     desc.addUntracked<int>("lenAMCTrailer", 0);
+     desc.addUntracked<int>("lenAMC13Header", 8);
+     desc.addUntracked<int>("lenAMC13Trailer", 8);
+     desc.addUntracked<bool>("debug", false)->setComment("turn on verbose output");
+     descriptions.add("l1tRawToDigi", desc);
    }
 }
 

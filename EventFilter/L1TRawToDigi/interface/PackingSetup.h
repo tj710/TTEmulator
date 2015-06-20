@@ -3,6 +3,8 @@
 
 #include <map>
 
+#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
+
 #include "EventFilter/L1TRawToDigi/interface/Packer.h"
 #include "EventFilter/L1TRawToDigi/interface/PackerTokens.h"
 
@@ -36,6 +38,10 @@ namespace l1t {
          // Get a map of Block IDs ↔ unpacker for a specific FED, board, AMC, FW combination
          virtual UnpackerMap getUnpackers(int fed, int board , int amc, int fw) = 0;
          virtual std::unique_ptr<UnpackerCollections> getCollections(edm::Event&) = 0;
+
+         // Fill description with needed parameters for the setup, i.e.,
+         // special input tags
+         virtual void fillDescription(edm::ParameterSetDescription&) = 0;
    };
 
    typedef PackingSetup*(prov_fct)();
@@ -45,6 +51,7 @@ namespace l1t {
       public:
          static const PackingSetupFactory* get() { return &instance_; };
          std::auto_ptr<PackingSetup> make(const std::string&) const;
+         void fillDescription(edm::ParameterSetDescription&) const;
       private:
          PackingSetupFactory() {};
          static const PackingSetupFactory instance_;

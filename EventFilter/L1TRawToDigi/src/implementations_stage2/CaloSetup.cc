@@ -16,6 +16,8 @@ namespace l1t {
                return std::unique_ptr<PackerTokens>(new CaloTokens(cfg, cc));
             };
 
+            virtual void fillDescription(edm::ParameterSetDescription& desc) override {};
+
             virtual PackerMap getPackers(int fed, int fw) override {
                PackerMap res;
 

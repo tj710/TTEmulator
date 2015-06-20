@@ -234,11 +234,18 @@ namespace l1t {
    // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
    void
    L1TDigiToRaw::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-     //The following says we do not know what parameters are allowed so do no validation
-     // Please change this to state exactly what you do use, even if it is no parameters
      edm::ParameterSetDescription desc;
-     desc.setUnknown();
-     descriptions.addDefault(desc);
+     desc.add<unsigned int>("FWId", -1);
+     desc.add<int>("FedId");
+     desc.addUntracked<int>("eventType", 1);
+     desc.add<std::string>("Setup");
+     desc.addOptional<edm::InputTag>("InputLabel");
+     desc.addUntracked<int>("lenSlinkHeader", 8);
+     desc.addUntracked<int>("lenSlinkTrailer", 8);
+
+     PackingSetupFactory::get()->fillDescription(desc);
+
+     descriptions.add("l1tDigiToRaw", desc);
    }
 }
 
