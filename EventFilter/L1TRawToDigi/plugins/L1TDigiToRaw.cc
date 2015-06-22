@@ -154,8 +154,11 @@ namespace l1t {
          std::vector<uint64_t> load64;
          for (unsigned int i = 0; i < load32.size(); i += 2) {
             uint64_t word = load32[i];
-            if (i + 1 < load32.size())
+            if (i + 1 < load32.size()) {
                word |= static_cast<uint64_t>(load32[i + 1]) << 32;
+            } else {
+               word |= static_cast<uint64_t>(0xffffffff) << 32;
+            }
             load64.push_back(word);
          }
 
