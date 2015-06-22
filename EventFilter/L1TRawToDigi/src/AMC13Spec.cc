@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <map>
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -75,6 +76,8 @@ namespace amc13 {
          return false;
       }
 
+      std::map<int, int> amc_index;
+
       header_ = Header(data++);
 
       if (!header_.check()) {
@@ -93,6 +96,7 @@ namespace amc13 {
       // first payload follows afterwards.
       for (unsigned int i = 0; i < header_.getNumberOfAMCs(); ++i) {
          payload_.push_back(amc::Packet(data++));
+         amc_index[payload_.back().blockHeader().getAMCNumber()] = i;
       }
 
       unsigned int tot_size = 0; // total payload size
@@ -153,7 +157,7 @@ namespace amc13 {
 
          check_crc = false;
          for (const auto& amc: headers) {
-            payload_[amc.getAMCNumber() - 1].addPayload(data, amc.getBlockSize());
+            payload_[amc_index[amc.getAMCNumber()]].addPayload(data, amc.getBlockSize());
             data += amc.getBlockSize();
 
             if (amc.validCRC())
