@@ -35,17 +35,9 @@ namespace l1t {
       void
       unpack_em(const Block& block, UnpackerCollections *coll)
       {
-         int nBX = int(ceil(block.header().getSize() / 6.)); 
-
-         // Find the first and last BXs
-
-         int firstBX = -(ceil((double)nBX/2.)-1);
-         int lastBX;
-         if (nBX % 2 == 0) {
-            lastBX = ceil((double)nBX/2.)+1;
-         } else {
-            lastBX = ceil((double)nBX/2.);
-         }
+         int nBX, firstBX, lastBX;
+         nBX = int(ceil(block.header().getSize() / 6.)); 
+         getBXRange(nBX, firstBX, lastBX);
 
          auto resRCTEMCands_ = static_cast<CaloCollections*>(coll)->getCaloEmCands();
 
@@ -107,16 +99,9 @@ namespace l1t {
       void
       unpack_region(const Block& block, UnpackerCollections *coll)
       {
-         int nBX = int(ceil(block.header().getSize() / 6.)); 
-
-         // Find the first and last BXs
-         int firstBX = -(ceil((double)nBX/2.)-1);
-         int lastBX;
-         if (nBX % 2 == 0) {
-            lastBX = ceil((double)nBX/2.)+1;
-         } else {
-            lastBX = ceil((double)nBX/2.);
-         }
+         int nBX, firstBX, lastBX;
+         nBX = int(ceil(block.header().getSize() / 6.)); 
+         getBXRange(nBX, firstBX, lastBX);
 
          auto resRCTRegions_ = static_cast<CaloCollections*>(coll)->getCaloRegions();
 

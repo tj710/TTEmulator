@@ -9,16 +9,9 @@ bool
 process(const l1t::Block& block, BXVector<T> * coll, F modify, bool isleft, bool isfirst,bool istau) {
    LogDebug("L1T") << "Block ID  = " << block.header().getID() << " size = " << block.header().getSize();
 
-   int nBX = int(ceil(block.header().getSize() / 2.)); 
-
-   // Find the first and last BXs
-   int firstBX = -(ceil((double)nBX/2.)-1);
-   int lastBX;
-   if (nBX % 2 == 0) {
-      lastBX = ceil((double)nBX/2.+1);
-   } else {
-      lastBX = ceil((double)nBX/2.);
-   }
+   int nBX, firstBX, lastBX;
+   nBX = int(ceil(block.header().getSize() / 2.)); 
+   l1t::getBXRange(nBX, firstBX, lastBX);
 
    coll->setBXRange(firstBX, lastBX-1);
 
