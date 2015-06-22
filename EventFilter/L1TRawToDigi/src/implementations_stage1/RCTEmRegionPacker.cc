@@ -113,7 +113,8 @@ namespace l1t {
           else myRCTeven=false;
           int linkMP7=-1;
           database.GetLinkMP7(mycrateRCT,myRCTeven,linkMP7);
-          res.push_back(Block(2*linkMP7, load[i])); 
+          res.push_back(Block(2*linkMP7, load[i], 0)); 
+          res.push_back(Block(2*linkMP7, load[i], 1)); 
         }
         return res;
       }

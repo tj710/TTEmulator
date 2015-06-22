@@ -40,10 +40,7 @@ namespace l1t {
                   PackerFactory::get()->make("stage1::MissEtPacker"),
                   PackerFactory::get()->make("stage1::CaloSpareHFPacker"),
                   PackerFactory::get()->make("stage1::MissHtPacker"),
-                  PackerFactory::get()->make("stage1::RCTEmRegionPacker"),      
-               };
-               res[{1, 0x100E}] = {
-                  PackerFactory::get()->make("stage1::RCTEmRegionPacker"),      
+                  PackerFactory::get()->make("stage1::RCTEmRegionPacker"),
                };
 
                return res;
