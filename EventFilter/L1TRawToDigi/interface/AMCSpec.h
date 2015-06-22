@@ -105,7 +105,7 @@ namespace amc {
          inline unsigned int getSize() const { return (data_ >> Size_shift) & Size_mask; };
 
          uint64_t raw() const { return data_; }
-         void check(unsigned int crc, unsigned int lv1_id, unsigned int size);
+         bool check(unsigned int crc, unsigned int lv1_id, unsigned int size) const;
 
          static void writeCRC(const uint64_t *start, uint64_t *end);
 

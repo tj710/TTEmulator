@@ -98,8 +98,8 @@ namespace amc {
    {
    }
 
-   void
-   Trailer::check(unsigned int crc, unsigned int lv1_id, unsigned int size)
+   bool
+   Trailer::check(unsigned int crc, unsigned int lv1_id, unsigned int size) const
    {
       if (crc != getCRC() || size != getSize() || (lv1_id & LV1ID_mask) != getLV1ID()) {
          edm::LogWarning("L1T")
@@ -109,7 +109,9 @@ namespace amc {
             << "\nBut expected:"
             << "\n\tLV1 ID " << (lv1_id & LV1ID_mask) << ", size " << size
             << ", CRC " << std::hex << std::setw(8) << std::setfill('0') << crc;
+         return false;
       }
+      return true;
    }
 
    void
@@ -152,8 +154,6 @@ namespace amc {
       auto crc = cms::CRC32Calculator(check).checksum();
 
       trailer_.check(crc, lv1, header_.getSize());
-
-      // FIXME add header checks.
    }
 
    std::vector<uint64_t>

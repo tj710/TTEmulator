@@ -18,7 +18,7 @@ namespace amc13 {
    }
 
    bool
-   Header::valid()
+   Header::check() const
    {
       return (getNumberOfAMCs() <= max_amc) && (getFormatVersion() == fov);
    }
@@ -31,8 +31,8 @@ namespace amc13 {
          (static_cast<uint64_t>(bx & BX_mask) << BX_shift);
    }
 
-   void
-   Trailer::check(unsigned int crc, unsigned int block, unsigned int lv1_id, unsigned int bx)
+   bool
+   Trailer::check(unsigned int crc, unsigned int block, unsigned int lv1_id, unsigned int bx) const
    {
       if ((crc != 0 && crc != getCRC()) || block != getBlock() || (lv1_id & LV1_mask) != getLV1ID() || (bx & BX_mask) != getBX()) {
          edm::LogWarning("L1T")
@@ -42,7 +42,9 @@ namespace amc13 {
             << "\nBut expected:"
             << "\n\tBX " << (bx & BX_mask) << ", LV1 ID " << (lv1_id & LV1_mask) << ", block # " << block
             << ", CRC " << std::hex << std::setw(8) << std::setfill('0') << crc;
+         return false;
       }
+      return true;
    }
 
    void
@@ -75,12 +77,12 @@ namespace amc13 {
 
       header_ = Header(data++);
 
-      if (!header_.valid()) {
+      if (!header_.check()) {
          edm::LogError("AMC")
             << "Invalid header for AMC13 packet: "
             << "format version " << header_.getFormatVersion()
             << ", " << header_.getNumberOfAMCs()
-            << " AMC packets, orbit " << header_.getOrbitNumber();
+            << " AMC packets";
          return false;
       }
 

@@ -18,9 +18,8 @@ namespace amc13 {
          Header(const uint64_t *data) : data_(data[0]) {};
          Header(unsigned int namc, unsigned int orbit);
 
-         bool valid();
-
          inline uint64_t raw() const { return data_; };
+         bool check() const;
 
          inline unsigned int getFormatVersion() const { return (data_ >> uFOV_shift) & uFOV_mask; };
          inline unsigned int getNumberOfAMCs() const { return (data_ >> nAMC_shift) & nAMC_mask; };
@@ -51,7 +50,7 @@ namespace amc13 {
          inline unsigned int getBX() const { return (data_ >> BX_shift) & BX_mask; };
 
          uint64_t raw() const { return data_; };
-         void check(unsigned int crc, unsigned int block, unsigned int lv1_id, unsigned int bx);
+         bool check(unsigned int crc, unsigned int block, unsigned int lv1_id, unsigned int bx) const;
          static void writeCRC(const uint64_t *start, uint64_t *end);
 
       private:
