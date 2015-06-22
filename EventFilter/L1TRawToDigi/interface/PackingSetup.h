@@ -15,7 +15,7 @@ namespace edm {
    class ConsumesCollector;
    class Event;
    class ParameterSet;
-   namespace one {
+   namespace stream {
       class EDProducerBase;
    }
 }
@@ -30,7 +30,7 @@ namespace l1t {
       public:
          PackingSetup() {};
          virtual std::unique_ptr<PackerTokens> registerConsumes(const edm::ParameterSet&, edm::ConsumesCollector&) = 0;
-         virtual void registerProducts(edm::one::EDProducerBase&) = 0;
+         virtual void registerProducts(edm::stream::EDProducerBase&) = 0;
 
          // Get a map of (amc #, board id) ↔ list of packing functions for a specific FED, FW combination
          virtual PackerMap getPackers(int fed, int fw) = 0;

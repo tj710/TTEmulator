@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/one/EDProducerBase.h"
+#include "FWCore/Framework/interface/stream/EDProducerBase.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "EventFilter/L1TRawToDigi/interface/Packer.h"
@@ -49,7 +49,7 @@ namespace l1t {
                return res;
             };
 
-            virtual void registerProducts(edm::one::EDProducerBase& prod) override {
+            virtual void registerProducts(edm::stream::EDProducerBase& prod) override {
                prod.produces<L1CaloEmCollection>();
                prod.produces<CaloSpareBxCollection>("HFBitCounts");
                prod.produces<CaloSpareBxCollection>("HFRingSums");
