@@ -39,7 +39,7 @@ namespace l1t {
         int unsigned i = 0;
 
         // Loop over multiple BX and then number of jets filling jet collection
-        for (int bx=firstBX; bx<lastBX; bx++){
+        for (int bx=firstBX; bx<=lastBX; bx++){
           uint32_t raw_data0 = block.payload()[i++];
           uint32_t raw_data1 = block.payload()[i++];        
 

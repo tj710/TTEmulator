@@ -36,7 +36,7 @@ namespace l1t {
         int unsigned i = 0;
 
         // Loop over multiple BX and then number of jets filling jet collection
-        for (int bx=firstBX; bx<lastBX; bx++){
+        for (int bx=firstBX; bx<=lastBX; bx++){
 
           res_->resize(bx,4);
 

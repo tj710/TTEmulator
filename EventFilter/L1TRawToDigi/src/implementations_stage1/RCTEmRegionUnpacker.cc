@@ -44,7 +44,7 @@ namespace l1t {
          // Initialise index
          int unsigned i = 0;
 
-         for (int bx=firstBX; bx<lastBX; bx++){
+         for (int bx=firstBX; bx<=lastBX; bx++){
 
             unsigned int crate;
             bool even=0;
@@ -110,7 +110,7 @@ namespace l1t {
          std::vector <uint32_t> uint;
          uint.reserve(6);
 
-         for (int bx=firstBX; bx<lastBX; bx++){
+         for (int bx=firstBX; bx<=lastBX; bx++){
 
             unsigned int crate;
             bool even=0;

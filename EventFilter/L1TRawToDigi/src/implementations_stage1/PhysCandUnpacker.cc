@@ -13,7 +13,7 @@ process(const l1t::Block& block, BXVector<T> * coll, F modify, bool isleft, bool
    nBX = int(ceil(block.header().getSize() / 2.)); 
    l1t::getBXRange(nBX, firstBX, lastBX);
 
-   coll->setBXRange(firstBX, lastBX-1);
+   coll->setBXRange(firstBX, lastBX);
 
    LogDebug("L1T")  << "nBX = " << nBX << " first BX = " << firstBX << " lastBX = " << lastBX;
 
@@ -21,7 +21,7 @@ process(const l1t::Block& block, BXVector<T> * coll, F modify, bool isleft, bool
    int unsigned i = 0;
 
    // Loop over multiple BX and then number of jets filling jet collection
-   for (int bx=firstBX; bx<lastBX; bx++){
+   for (int bx=firstBX; bx<=lastBX; bx++){
       
       if(!istau)coll->resize(bx,8);
       else coll->resize(bx,4);
