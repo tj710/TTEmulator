@@ -29,7 +29,7 @@ namespace l1t {
             virtual PackerMap getPackers(int fed, int fw) override {
                PackerMap res;
 
-               res[{1, 0x100D}] = {
+               res[{1, 0x2300}] = {
                   PackerFactory::get()->make("stage1::IsoEGammaPacker"),
                   PackerFactory::get()->make("stage1::NonIsoEGammaPacker"),
                   PackerFactory::get()->make("stage1::CentralJetPacker"),
