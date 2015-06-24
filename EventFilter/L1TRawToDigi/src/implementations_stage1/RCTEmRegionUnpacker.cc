@@ -67,7 +67,7 @@ namespace l1t {
             LogDebug("L1T")<<"--------------- mp7 link ="<<mp7link<<"RCT crate id="<<crate<<", RCT crate even="<<even<<std::endl;
 
             if(!even) {
-               for(int i=0;i<6;i++) converter.Set32bitWordLinkOdd(i,uint[i]);
+               for(int iword=0;iword<6;iword++) converter.Set32bitWordLinkOdd(iword,uint[iword]);
                converter.Convert();
 
                for(int j = 0; j < 4; j++) {
@@ -131,7 +131,7 @@ namespace l1t {
 
             if(!even) {
 
-               for(int i=0;i<6;i++) converter.Set32bitWordLinkOdd(i,uint[i]);
+               for(int iword=0;iword<6;iword++) converter.Set32bitWordLinkOdd(iword,uint[iword]);
                converter.Convert();
 
                for(int j = 0; j < 8; j++) {
@@ -148,7 +148,7 @@ namespace l1t {
 
             else{
 
-               for(int i=0;i<6;i++) converter.Set32bitWordLinkEven(i,uint[i]);
+               for(int iword=0;iword<6;iword++) converter.Set32bitWordLinkEven(iword,uint[iword]);
                converter.Convert();
 
                for(int j = 0; j < 7; j++) {

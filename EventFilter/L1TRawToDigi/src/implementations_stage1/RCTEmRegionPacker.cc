@@ -106,15 +106,15 @@ namespace l1t {
 
         Blocks res = {}; 
         
-        for (int i = 0; i < 36; ++i) {
-          unsigned int mycrateRCT=(int)(i/2);
+        for (int ilink = 0; ilink < 36; ++ilink) {
+          unsigned int mycrateRCT=(int)(ilink/2);
           bool myRCTeven;
-          if (i%2==0) myRCTeven=true;
+          if (ilink%2==0) myRCTeven=true;
           else myRCTeven=false;
           int linkMP7=-1;
           database.GetLinkMP7(mycrateRCT,myRCTeven,linkMP7);
-          res.push_back(Block(2*linkMP7, load[i], 0)); 
-          res.push_back(Block(2*linkMP7, load[i], 1)); 
+          res.push_back(Block(2*linkMP7, load[ilink], 0)); 
+          res.push_back(Block(2*linkMP7, load[ilink], 1)); 
         }
         return res;
       }
