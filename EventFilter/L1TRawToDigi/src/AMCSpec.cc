@@ -145,15 +145,22 @@ namespace amc {
    }
 
    void
-   Packet::finalize(unsigned int lv1, unsigned int bx)
+   Packet::finalize(unsigned int lv1, unsigned int bx, bool legacy_mc)
    {
-      header_ = Header(payload_.data());
-      trailer_ = Trailer(&payload_.back());
+      if (legacy_mc) {
+         header_ = Header(block_header_.getAMCNumber(), lv1, bx, block_header_.getSize(), 0, block_header_.getBoardID(), 0);
 
-      std::string check(reinterpret_cast<const char*>(payload_.data()), payload_.size() * 8 - 4);
-      auto crc = cms::CRC32Calculator(check).checksum();
+         payload_.insert(payload_.begin(), {0, 0});
+         payload_.insert(payload_.end(), {0});
+      } else {
+         header_ = Header(payload_.data());
+         trailer_ = Trailer(&payload_.back());
 
-      trailer_.check(crc, lv1, header_.getSize());
+         std::string check(reinterpret_cast<const char*>(payload_.data()), payload_.size() * 8 - 4);
+         auto crc = cms::CRC32Calculator(check).checksum();
+
+         trailer_.check(crc, lv1, header_.getSize());
+      }
    }
 
    std::vector<uint64_t>

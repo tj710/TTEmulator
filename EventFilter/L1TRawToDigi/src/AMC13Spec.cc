@@ -67,7 +67,7 @@ namespace amc13 {
    }
 
    bool
-   Packet::parse(const uint64_t *start, const uint64_t *data, unsigned int size, unsigned int lv1, unsigned int bx)
+   Packet::parse(const uint64_t *start, const uint64_t *data, unsigned int size, unsigned int lv1, unsigned int bx, bool legacy_mc)
    {
       // Need at least a header and trailer
       // TODO check if this can be removed
@@ -179,7 +179,7 @@ namespace amc13 {
       }
 
       for (auto& amc: payload_) {
-         amc.finalize(lv1, bx);
+         amc.finalize(lv1, bx, legacy_mc);
       }
 
       return true;

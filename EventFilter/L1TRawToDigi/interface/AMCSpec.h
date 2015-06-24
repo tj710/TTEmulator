@@ -130,7 +130,7 @@ namespace amc {
          // To be called after the last payload addition.  Removes header
          // and trailer from the actual paylod.  Also performs
          // cross-checks for data consistency.
-         void finalize(unsigned int lv1, unsigned int bx);
+         void finalize(unsigned int lv1, unsigned int bx, bool legacy_mc=false);
 
          std::vector<uint64_t> block(unsigned int id) const;
          std::unique_ptr<uint64_t[]> data();
@@ -140,7 +140,7 @@ namespace amc {
 
          inline unsigned int blocks() const { return block_header_.getBlocks(); };
          // Returns the size of the payload _without_ the headers
-         inline unsigned int size() const { return block_header_.getSize() - 3; };
+         inline unsigned int size() const { return payload_.size() - 3; };
 
       private:
          BlockHeader block_header_;
