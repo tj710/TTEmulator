@@ -60,6 +60,7 @@ namespace l1t {
          edm::EDGetTokenT<FEDRawDataCollection> fedData_;
          std::vector<int> fedIds_;
          int fwId_;
+         bool fwOverride_;
 
          std::auto_ptr<PackingSetup> prov_;
 
@@ -84,10 +85,16 @@ std::ostream & operator<<(std::ostream& o, const l1t::BlockHeader& h) {
 namespace l1t {
    L1TRawToDigi::L1TRawToDigi(const edm::ParameterSet& config) :
       fedIds_(config.getParameter<std::vector<int>>("FedIds")),
-      fwId_(config.getUntrackedParameter<int>("FWId", -1)),
+      fwId_(-1),
+      fwOverride_(false),
       ctp7_mode_(config.getUntrackedParameter<bool>("CTP7", false))
    {
       fedData_ = consumes<FEDRawDataCollection>(config.getParameter<edm::InputTag>("InputLabel"));
+
+      if (config.exists("FWId")) {
+         fwId_ = config.getParameter<int>("FWId");
+         fwOverride_ = true;
+      }
 
       prov_ = PackingSetupFactory::get()->make(config.getParameter<std::string>("Setup"));
       prov_->registerProducts(*this);
@@ -171,7 +178,8 @@ namespace l1t {
                   (const uint64_t*) (data + slinkHeaderSize_),
                   (l1tRcd.size() - slinkHeaderSize_ - slinkTrailerSize_) / 8,
                   header.lvl1ID(),
-                  header.bxID())) {
+                  header.bxID(),
+                  fwOverride_ && fwId_ < 0)) {
             LogError("L1T")
                << "Could not extract AMC13 Packet.";
             return;
@@ -195,7 +203,7 @@ namespace l1t {
             unsigned fw = payload->getFirmwareId();
 
             // Let parameterset value override FW version
-            if (fwId_ > 0)
+            if (fwOverride_)
                fw = fwId_;
 
             unsigned board = amc.blockHeader().getBoardID();
@@ -243,7 +251,7 @@ namespace l1t {
    void
    L1TRawToDigi::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
      edm::ParameterSetDescription desc;
-     desc.addUntracked<int>("FWId", -1);
+     desc.addOptional<int>("FWId")->setComment("if negative, will be able to read 74x MC");
      desc.addUntracked<bool>("CTP7", false);
      desc.add<edm::InputTag>("InputLabel");
      desc.add<std::vector<int>>("FedIds", {});
