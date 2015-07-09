@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/one/EDProducerBase.h"
+#include "FWCore/Framework/interface/stream/EDProducerBase.h"
 
 #include "EventFilter/L1TRawToDigi/interface/Packer.h"
 #include "EventFilter/L1TRawToDigi/interface/Unpacker.h"
@@ -15,6 +15,8 @@ namespace l1t {
             virtual std::unique_ptr<PackerTokens> registerConsumes(const edm::ParameterSet& cfg, edm::ConsumesCollector& cc) override {
                return std::unique_ptr<PackerTokens>(new CaloTokens(cfg, cc));
             };
+
+            virtual void fillDescription(edm::ParameterSetDescription& desc) override {};
 
             virtual PackerMap getPackers(int fed, int fw) override {
                PackerMap res;
@@ -33,7 +35,7 @@ namespace l1t {
                return res;
             };
 
-            virtual void registerProducts(edm::one::EDProducerBase& prod) override {
+            virtual void registerProducts(edm::stream::EDProducerBase& prod) override {
                prod.produces<CaloTowerBxCollection>();
                prod.produces<EGammaBxCollection>();
                prod.produces<EtSumBxCollection>();
@@ -59,10 +61,9 @@ namespace l1t {
 
                UnpackerMap res;
                if (fed == 1366) {
-                  res[1] = egamma_unp;
-                  res[3] = etsum_unp;
-                  res[5] = jet_unp;
-                  res[7] = tau_unp;
+                  res[13] = jet_unp;
+                  res[15] = jet_unp;
+                  res[21] = etsum_unp;
                } else if (fed == 1360) {
                   res[1] = mp_unp;
                   res[3] = mp_unp;
