@@ -92,7 +92,7 @@ namespace l1t {
       fedData_ = consumes<FEDRawDataCollection>(config.getParameter<edm::InputTag>("InputLabel"));
 
       if (config.exists("FWId")) {
-         fwId_ = config.getParameter<int>("FWId");
+         fwId_ = config.getParameter<unsigned int>("FWId");
          fwOverride_ = true;
       }
 
@@ -251,7 +251,7 @@ namespace l1t {
    void
    L1TRawToDigi::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
      edm::ParameterSetDescription desc;
-     desc.addOptional<int>("FWId")->setComment("if negative, will be able to read 74x MC");
+     desc.addOptional<unsigned int>("FWId")->setComment("if negative, will be able to read 74x MC");
      desc.addUntracked<bool>("CTP7", false);
      desc.add<edm::InputTag>("InputLabel");
      desc.add<std::vector<int>>("FedIds", {});

@@ -11,7 +11,7 @@ caloStage1Raw = cms.EDProducer(
     RegionInputLabel = cms.InputTag("caloStage1Digis", ""),
     EmCandInputLabel = cms.InputTag("caloStage1Digis", ""),
     FedId = cms.int32(1352),
-    FWId = cms.uint32(1),
+    FWId = cms.uint32(0x1),
     lenSlinkHeader = cms.untracked.int32(8),
     lenSlinkTrailer = cms.untracked.int32(8)
 )

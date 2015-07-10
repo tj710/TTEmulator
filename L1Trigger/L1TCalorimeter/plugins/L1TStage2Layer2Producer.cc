@@ -1,12 +1,11 @@
+
 // -*- C++ -*-
 //
 // Package:    L1Trigger/skeleton
 // Class:      skeleton
 // 
 /**\class skeleton skeleton.cc L1Trigger/skeleton/plugins/skeleton.cc
-
  Description: [one line class summary]
-
  Implementation:
      [Notes on implementation]
 */
@@ -44,6 +43,10 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
+#include "DataFormats/L1Trigger/interface/Stub.h"
+#include "DataFormats/L1Trigger/interface/OutStub.h"
+
+
 
 //
 // class declaration
@@ -100,6 +103,10 @@ L1TStage2Layer2Producer::L1TStage2Layer2Producer(const edm::ParameterSet& ps) {
   produces<TauBxCollection> ();
   produces<JetBxCollection> ();
   produces<EtSumBxCollection> ();
+	//produces<StubBxCollection> ();
+  //produces<OutStubBxCollection> ();
+	produces<StubBxCollection> ("MP");
+  produces<OutStubBxCollection> ("MP");
   
   // register what you consume and keep token for later access:
   m_towerToken = consumes<CaloTowerBxCollection>(ps.getParameter<edm::InputTag>("towerToken"));
@@ -147,6 +154,10 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   std::auto_ptr<TauBxCollection> taus (new TauBxCollection(0, bxFirst, bxLast));
   std::auto_ptr<JetBxCollection> jets (new JetBxCollection(0, bxFirst, bxLast));
   std::auto_ptr<EtSumBxCollection> etsums (new EtSumBxCollection(0, bxFirst, bxLast));
+    std::auto_ptr<StubBxCollection> stubs (new StubBxCollection(0, bxFirst, bxLast));
+        std::auto_ptr<OutStubBxCollection> outstubs (new OutStubBxCollection(0, bxFirst, bxLast));
+
+
   
   // loop over BX
   for(int ibx = bxFirst; ibx < bxLast+1; ++ibx) {
@@ -160,7 +171,10 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     std::auto_ptr< std::vector<EGamma> > localEGammas (new std::vector<EGamma>);
     std::auto_ptr< std::vector<Tau> > localTaus (new std::vector<Tau>);
     std::auto_ptr< std::vector<Jet> > localJets (new std::vector<Jet>);
-    std::auto_ptr< std::vector<EtSum> > localEtSums (new std::vector<EtSum>);
+    std::auto_ptr< std::vector<Stub> > localStubs (new std::vector<Stub>);
+    std::auto_ptr< std::vector<OutStub> > localOutStubs (new std::vector<OutStub>);
+     std::auto_ptr< std::vector<EtSum> > localEtSums (new std::vector<EtSum>);
+
     
     LogDebug("L1TDebug") << "BX=" << ibx << ", N(Towers)=" << towers->size(ibx) << std::endl;
 
@@ -172,7 +186,10 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 
     LogDebug("L1TDebug") << "BX=" << ibx << ", N(Towers)=" << localTowers->size() << std::endl;    
 
-    m_processor->processEvent(*localTowers,
+    m_processor->processEvent(
+    *localStubs,
+			      *localOutStubs,
+			      *localTowers,
 			      *localOutTowers, 
 			      *localClusters, 
 			      *localMPEGammas, 
@@ -182,21 +199,40 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 			      *localEGammas, 
 			      *localTaus,
 			      *localJets,
-			      *localEtSums);
+			      *localEtSums
+			      );
     
-    for(std::vector<CaloTower>::const_iterator tow = localOutTowers->begin(); tow != localOutTowers->end(); ++tow) outTowers->push_back(ibx, *tow);
-    for(std::vector<CaloCluster>::const_iterator clus = localClusters->begin(); clus != localClusters->end(); ++clus) clusters->push_back(ibx, *clus);
-    for(std::vector<EGamma>::const_iterator eg = localMPEGammas->begin(); eg != localMPEGammas->end(); ++eg) mpegammas->push_back(ibx, *eg);
-    for(std::vector<Tau>::const_iterator tau = localMPTaus->begin(); tau != localMPTaus->end(); ++tau) mptaus->push_back(ibx, *tau);
-    for(std::vector<Jet>::const_iterator jet = localMPJets->begin(); jet != localMPJets->end(); ++jet) mpjets->push_back(ibx, *jet);
-    for(std::vector<EtSum>::const_iterator etsum = localMPEtSums->begin(); etsum != localMPEtSums->end(); ++etsum) mpsums->push_back(ibx, *etsum);
-    for(std::vector<EGamma>::const_iterator eg = localEGammas->begin(); eg != localEGammas->end(); ++eg) egammas->push_back(ibx, *eg);
-    for(std::vector<Tau>::const_iterator tau = localTaus->begin(); tau != localTaus->end(); ++tau) taus->push_back(ibx, *tau);
-    for(std::vector<Jet>::const_iterator jet = localJets->begin(); jet != localJets->end(); ++jet) jets->push_back(ibx, *jet);
-    for(std::vector<EtSum>::const_iterator etsum = localEtSums->begin(); etsum != localEtSums->end(); ++etsum) etsums->push_back(ibx, *etsum);
+    for(std::vector<CaloTower>::const_iterator tow = localOutTowers->begin();
+     tow != localOutTowers->end(); ++tow) outTowers->push_back(ibx, *tow);
+    for(std::vector<CaloCluster>::const_iterator clus = localClusters->begin(); 
+    clus != localClusters->end(); ++clus) clusters->push_back(ibx, *clus);
+    for(std::vector<EGamma>::const_iterator eg = localMPEGammas->begin(); 
+    eg != localMPEGammas->end(); ++eg) mpegammas->push_back(ibx, *eg);
+    for(std::vector<Tau>::const_iterator tau = localMPTaus->begin();
+     tau != localMPTaus->end(); ++tau) mptaus->push_back(ibx, *tau);
+    for(std::vector<Jet>::const_iterator jet = localMPJets->begin(); 
+    jet != localMPJets->end(); ++jet) mpjets->push_back(ibx, *jet);
+    for(std::vector<EtSum>::const_iterator etsum = localMPEtSums->begin();
+     etsum != localMPEtSums->end(); ++etsum) mpsums->push_back(ibx, *etsum);
+    for(std::vector<EGamma>::const_iterator eg = localEGammas->begin(); 
+    eg != localEGammas->end(); ++eg) egammas->push_back(ibx, *eg);
+    for(std::vector<Tau>::const_iterator tau = localTaus->begin(); 
+    tau != localTaus->end(); ++tau) taus->push_back(ibx, *tau);
+    for(std::vector<Jet>::const_iterator jet = localJets->begin(); 
+    jet != localJets->end(); ++jet) jets->push_back(ibx, *jet);
+    for(std::vector<EtSum>::const_iterator etsum = localEtSums->begin();
+     etsum != localEtSums->end(); ++etsum) etsums->push_back(ibx, *etsum);
+    for(std::vector<Stub>::const_iterator stub = localStubs->begin();
+     stub != localStubs->end(); ++stub) stubs->push_back(ibx, *stub);
+    for(std::vector<OutStub>::const_iterator outstub = localOutStubs->begin();
+     outstub != localOutStubs->end(); ++outstub) outstubs->push_back(ibx, *outstub);
 
 
-    LogDebug("L1TDebug") << "BX=" << ibx << ", N(Cluster)=" << localClusters->size() << ", N(EG)=" << localEGammas->size() << ", N(Tau)=" << localTaus->size() << ", N(Jet)=" << localJets->size() << ", N(Sums)=" << localEtSums->size() << std::endl;    
+
+    LogDebug("L1TDebug") << "BX=" << ibx << ", N(Cluster)=" << localClusters->size()
+     << ", N(EG)=" << localEGammas->size() << ", N(Tau)=" << localTaus->size() 
+     << ", N(Jet)=" << localJets->size() << ", N(Sums)=" << localEtSums->size() 
+     << std::endl;    
 
   }
   
@@ -210,6 +246,8 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   iEvent.put(taus);
   iEvent.put(jets);
   iEvent.put(etsums);
+  iEvent.put(stubs, "MP");
+  iEvent.put(outstubs, "MP");
   
 }
 
@@ -250,7 +288,8 @@ L1TStage2Layer2Producer::beginRun(edm::Run const& iRun, edm::EventSetup const& i
     LogDebug("L1TDebug") << *m_params << std::endl;
 
     if (! m_params){
-      edm::LogError("l1t|caloStage2") << "Could not retrieve params from Event Setup" << std::endl;            
+      edm::LogError("l1t|caloStage2") << "Could not retrieve params from Event Setup" 
+      << std::endl;            
     }
 
   }

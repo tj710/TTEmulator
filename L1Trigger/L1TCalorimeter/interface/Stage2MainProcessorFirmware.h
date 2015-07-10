@@ -25,6 +25,10 @@
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxTauAlgoFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxJetAlgoFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxSumsAlgoFirmware.h"
+#include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTriggerFirmware.h"
+#include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTrigger.h"
+
+
 
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
 
@@ -38,7 +42,10 @@ namespace l1t {
 
     virtual ~Stage2MainProcessorFirmwareImp1();
 
-    virtual void processEvent(const std::vector<l1t::CaloTower> & inTowers,
+    virtual void processEvent(
+    const std::vector<l1t::Stub> & stubs,
+    std::vector<l1t::OutStub> & outstubs,
+    const std::vector<l1t::CaloTower> & inTowers,
 			      std::vector<l1t::CaloTower> & outTowers,
 			      std::vector<l1t::CaloCluster> & clusters,
 			      std::vector<l1t::EGamma> & mpEGammas,
@@ -66,6 +73,7 @@ namespace l1t {
     Stage2Layer2JetAlgorithm* m_jetAlgo;
     Stage2Layer2EtSumAlgorithm* m_sumAlgo;
     Stage2Layer2JetSumAlgorithm* m_jetSumAlgo;
+    Stage2Layer2TrackTrigger* m_trackTrigger;
 
     Stage2Layer2DemuxEGAlgo* m_demuxEGAlgo;
     Stage2Layer2DemuxTauAlgo* m_demuxTauAlgo;

@@ -6,5 +6,5 @@ caloStage1Digis = cms.EDProducer(
     #InputLabel = cms.InputTag("l1tDigiToRaw"),
     InputLabel = cms.InputTag("rawDataCollector"),
     FedId = cms.int32(1352),
-    FWId = cms.untracked.int32(2)
+    FWId = cms.uint32(0x2)
 )

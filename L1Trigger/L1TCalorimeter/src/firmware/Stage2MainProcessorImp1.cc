@@ -18,6 +18,8 @@
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxTauAlgoFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxJetAlgoFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2DemuxSumsAlgoFirmware.h"
+#include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTrigger.h"
+
 
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
 
@@ -37,11 +39,14 @@ l1t::Stage2MainProcessorFirmwareImp1::Stage2MainProcessorFirmwareImp1(unsigned f
   m_jetAlgo = new Stage2Layer2JetAlgorithmFirmwareImp1(m_params);
   m_sumAlgo = new Stage2Layer2EtSumAlgorithmFirmwareImp1(m_params);
   m_jetSumAlgo = new Stage2Layer2JetSumAlgorithmFirmwareImp1(m_params);
+	m_trackTrigger = new Stage2Layer2TrackTriggerFirmware(m_params);
+
   
   m_demuxEGAlgo = new Stage2Layer2DemuxEGAlgoFirmwareImp1(m_params);
   m_demuxTauAlgo = new Stage2Layer2DemuxTauAlgoFirmwareImp1(m_params);
   m_demuxJetAlgo = new Stage2Layer2DemuxJetAlgoFirmwareImp1(m_params);
   m_demuxSumsAlgo = new Stage2Layer2DemuxSumsAlgoFirmwareImp1(m_params);
+
 
 }
 
@@ -52,7 +57,10 @@ l1t::Stage2MainProcessorFirmwareImp1::~Stage2MainProcessorFirmwareImp1()
 
 
 //need to switch to BXVector
-void l1t::Stage2MainProcessorFirmwareImp1::processEvent(const std::vector<l1t::CaloTower> & inTowers,
+void l1t::Stage2MainProcessorFirmwareImp1::processEvent(
+const std::vector<l1t::Stub> & stubs,
+std::vector<l1t::OutStub> & outstubs,
+    const std::vector<l1t::CaloTower> & inTowers,
 							std::vector<l1t::CaloTower> & outTowers,
 							std::vector<l1t::CaloCluster> & clusters,
 							std::vector<l1t::EGamma> & mpEGammas,
@@ -72,6 +80,7 @@ void l1t::Stage2MainProcessorFirmwareImp1::processEvent(const std::vector<l1t::C
   std::vector<l1t::EtSum> jetSums;
 
   m_towerAlgo->processEvent( inTowers, outTowers );
+  m_trackTrigger->processEvent(stubs, outstubs);
   m_egClusterAlgo->processEvent( outTowers, egClusters );
   m_egAlgo->processEvent( egClusters, outTowers, mpEGammas );
   m_tauClusterAlgo->processEvent( outTowers, tauClusters );
@@ -109,7 +118,8 @@ void l1t::Stage2MainProcessorFirmwareImp1::print(std::ostream& out) const {
   out << "  Jet algo         : " << (m_jetAlgo?1:0) << std::endl;
   out << "  Jet sum algo     : " << (m_jetSumAlgo?1:0) << std::endl;
   out << "  Sums algo        : " << (m_sumAlgo?1:0) << std::endl;
+    out << "  Track Trigger        : " << (m_trackTrigger?1:0) << std::endl;
+
 
 }
-
 
