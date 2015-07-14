@@ -15,7 +15,6 @@
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 
 #include "DataFormats/L1Trigger/interface/Stub.h"
-#include "DataFormats/L1Trigger/interface/OutStub.h"
 
 
 
@@ -26,7 +25,7 @@ namespace l1t {
   class Stage2Layer2TrackTrigger { 
   public:
     virtual void processEvent(const std::vector<l1t::Stub> & stubs, 
-    std::vector<l1t::OutStub> & outstubs) = 0;    
+    std::vector<l1t::Stub> outstubs) = 0;    
 
     virtual ~Stage2Layer2TrackTrigger(){};
   }; 

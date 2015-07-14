@@ -59,7 +59,8 @@ l1t::Stage2MainProcessorFirmwareImp1::~Stage2MainProcessorFirmwareImp1()
 //need to switch to BXVector
 void l1t::Stage2MainProcessorFirmwareImp1::processEvent(
 const std::vector<l1t::Stub> & stubs,
-std::vector<l1t::OutStub> & outstubs,
+std::vector<l1t::Stub> & outstubs,
+
     const std::vector<l1t::CaloTower> & inTowers,
 							std::vector<l1t::CaloTower> & outTowers,
 							std::vector<l1t::CaloCluster> & clusters,
@@ -78,6 +79,7 @@ std::vector<l1t::OutStub> & outstubs,
   std::vector<l1t::Jet> mpAllJets;
   std::vector<l1t::EtSum> towerSums;
   std::vector<l1t::EtSum> jetSums;
+ // std::vector<l1t::Stub> outstubs;
 
   m_towerAlgo->processEvent( inTowers, outTowers );
   m_trackTrigger->processEvent(stubs, outstubs);

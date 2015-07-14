@@ -44,7 +44,6 @@
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 #include "DataFormats/L1Trigger/interface/Stub.h"
-#include "DataFormats/L1Trigger/interface/OutStub.h"
 
 
 
@@ -155,7 +154,7 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   std::auto_ptr<JetBxCollection> jets (new JetBxCollection(0, bxFirst, bxLast));
   std::auto_ptr<EtSumBxCollection> etsums (new EtSumBxCollection(0, bxFirst, bxLast));
     std::auto_ptr<StubBxCollection> stubs (new StubBxCollection(0, bxFirst, bxLast));
-        std::auto_ptr<OutStubBxCollection> outstubs (new OutStubBxCollection(0, bxFirst, bxLast));
+        std::auto_ptr<StubBxCollection> outstubs (new StubBxCollection(0, bxFirst, bxLast));
 
 
   
@@ -172,7 +171,7 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     std::auto_ptr< std::vector<Tau> > localTaus (new std::vector<Tau>);
     std::auto_ptr< std::vector<Jet> > localJets (new std::vector<Jet>);
     std::auto_ptr< std::vector<Stub> > localStubs (new std::vector<Stub>);
-    std::auto_ptr< std::vector<OutStub> > localOutStubs (new std::vector<OutStub>);
+    std::auto_ptr< std::vector<Stub> > localOutStubs (new std::vector<Stub>);
      std::auto_ptr< std::vector<EtSum> > localEtSums (new std::vector<EtSum>);
 
     
@@ -224,7 +223,7 @@ L1TStage2Layer2Producer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
      etsum != localEtSums->end(); ++etsum) etsums->push_back(ibx, *etsum);
     for(std::vector<Stub>::const_iterator stub = localStubs->begin();
      stub != localStubs->end(); ++stub) stubs->push_back(ibx, *stub);
-    for(std::vector<OutStub>::const_iterator outstub = localOutStubs->begin();
+    for(std::vector<Stub>::const_iterator outstub = localOutStubs->begin();
      outstub != localOutStubs->end(); ++outstub) outstubs->push_back(ibx, *outstub);
 
 

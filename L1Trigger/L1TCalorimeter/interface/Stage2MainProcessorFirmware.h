@@ -28,8 +28,6 @@
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTriggerFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTrigger.h"
 
-
-
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
 
 
@@ -44,7 +42,7 @@ namespace l1t {
 
     virtual void processEvent(
     const std::vector<l1t::Stub> & stubs,
-    std::vector<l1t::OutStub> & outstubs,
+    std::vector<l1t::Stub> & outstubs,
     const std::vector<l1t::CaloTower> & inTowers,
 			      std::vector<l1t::CaloTower> & outTowers,
 			      std::vector<l1t::CaloCluster> & clusters,
@@ -59,7 +57,8 @@ namespace l1t {
 
     void print(std::ostream&) const;
 
-    friend std::ostream& operator<<(std::ostream& o, const Stage2MainProcessorFirmwareImp1 & p) { p.print(o); return o; }
+    friend std::ostream& operator<<(std::ostream& o, 
+    const Stage2MainProcessorFirmwareImp1 & p) { p.print(o); return o; }
 
   private:
     

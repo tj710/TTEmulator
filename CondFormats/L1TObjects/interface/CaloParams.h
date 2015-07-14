@@ -27,10 +27,16 @@ namespace l1t {
 
   public:
 
+    std::vector<int> MAxisMax;
+std::vector<int> MAxisMin;
+std::vector<int> CAxisMax;
+std::vector<int> CAxisMin;
+
     enum { Version = 1 };
 
     class Node {
     public:
+
       std::string type_;
       unsigned version_;
       l1t::LUT LUT_;
@@ -41,6 +47,7 @@ namespace l1t {
       Node(){ type_="unspecified"; version_=0; }
       COND_SERIALIZABLE;
     };
+    
 
     class TowerParams{
     public:
@@ -432,3 +439,4 @@ namespace l1t {
 
 }// namespace
 #endif
+

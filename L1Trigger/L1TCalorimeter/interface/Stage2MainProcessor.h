@@ -24,7 +24,6 @@
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
 
 #include "DataFormats/L1Trigger/interface/Stub.h"
-#include "DataFormats/L1Trigger/interface/OutStub.h"
 
 
 
@@ -34,7 +33,7 @@ namespace l1t {
   public:
     virtual void processEvent(
     const std::vector<l1t::Stub> & stubs,
-    std::vector<l1t::OutStub> & outstubs,
+    std::vector<l1t::Stub> & outstubs,
     const std::vector<l1t::CaloTower> & inTowers,
 			      std::vector<l1t::CaloTower> & outTowers,
 			      std::vector<l1t::CaloCluster> & clusters,

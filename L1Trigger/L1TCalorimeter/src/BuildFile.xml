@@ -5,7 +5,6 @@
 <use name="DataFormats/L1GlobalCaloTrigger"/>
 <use name="CondFormats/L1TObjects"/>
 <use name="CondFormats/DataRecord"/>
-<use name="StubDataFormats/Stubs"/>
 <export>
   <lib name="1"/>
 </export>
