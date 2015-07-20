@@ -1,27 +1,38 @@
-
-
 #include "DataFormats/L1Trigger/interface/Stub.h"
 
-/*l1t::Stub::Stub( const LorentzVector& p4,
-	       int pt,
-	       int eta,
-	       int phi,
-	       int qual )
-  : L1Candidate(p4, pt, eta, phi, qual, 0)
+
+
+
+l1t::Stub::Stub(
+                                int S,
+                                int phiS,
+                                int rT,
+                                int z,
+        int dphi,
+        int rho,
+        int dphi_reduced,
+        int m,
+        int c
+
+                                )
+  : 
+    S_(S),
+    phiS_(phiS),
+    rT_(rT),
+    z_(z),
+    dphi_(dphi),
+    rho_(rho),
+    dphi_reduced_(dphi_reduced),
+    m_(m),
+    c_(c)
+
+{
+  
+}
+
+l1t::Stub::~Stub() 
 {
 
 }
 
-l1t::Stub::Stub( const PolarLorentzVector& p4,
-	       int pt,
-	       int eta,
-	       int phi,
-	       int qual )
-  : L1Candidate(p4, pt, eta, phi, qual, 0)
-{
-
-}*/
-
-l1t::Stub::~Stub()
-{
-}
+ 

@@ -9,6 +9,8 @@
 #include "L1Trigger/L1TCalorimeter/interface/Stage2Layer2TrackTriggerFirmware.h"
 #include "L1Trigger/L1TCalorimeter/interface/CaloTools.h"
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
+#include "DataFormats/L1Trigger/interface/Stub.h"
+
 
 l1t::Stage2Layer2TrackTriggerFirmware::Stage2Layer2TrackTriggerFirmware(CaloParams* 
 params) :
@@ -105,10 +107,10 @@ std::cout << "stub list: phiS: dphi: z: rT" << std::endl;
 
 for (unsigned int cand_stub=0; cand_stub < hough_array[x][y].ram_stubs.size(); ++cand_stub){
 outstubs.push_back(hough_array[x][y].ram_stubs[cand_stub]);
-outstubs.back().dphi_reduced = outstubs.back().dphi >> 3;
+outstubs.back().setdphi_reduced(outstubs.back().dphi() >> 3);
 
-std::cout << outstubs.back().phiS << "\t" << outstubs.back().dphi << "\t" <<
-outstubs.back().z << "\t" << outstubs.back().rT << std::endl;
+std::cout << outstubs.back().phiS() << "\t" << outstubs.back().dphi() << "\t" <<
+outstubs.back().z() << "\t" << outstubs.back().rT() << std::endl;
 }
 }
 }
