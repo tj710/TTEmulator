@@ -3,10 +3,9 @@
 // Package:    L1Trigger/L1TCalorimeter
 // Class:      L1TCaloAnalyzer
 // 
-/**\class L1TCaloAnalyzer L1TCaloAnalyzer.cc L1Trigger/L1TCalorimeter/plugins/L1TCaloAnalyzer.cc
-
+/**\class L1TCaloAnalyzer L1TCaloAnalyzer.cc L1Trigger/
+L1TCalorimeter/plugins/L1TCaloAnalyzer.cc
  Description: [one line class summary]
-
  Implementation:
      [Notes on implementation]
 */
@@ -41,6 +40,8 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
+#include "DataFormats/L1Trigger/interface/Stub.h"
+
 
 #include "TH1F.h"
 #include "TH2F.h"
@@ -66,8 +67,10 @@ private:
   
   //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
   //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-  //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  //virtual void beginLuminosityBlock(edm::LuminosityBlock const&,
+  // edm::EventSetup const&) override;
+  //virtual void endLuminosityBlock(edm::LuminosityBlock const&,
+  // edm::EventSetup const&) override;
   
   // ----------member data ---------------------------
   edm::EDGetToken m_towerToken;
@@ -80,6 +83,8 @@ private:
   edm::EDGetToken m_tauToken;
   edm::EDGetToken m_jetToken;
   edm::EDGetToken m_sumToken;
+    edm::EDGetToken m_stubToken;
+
 
   bool m_doTowers;
   bool m_doClusters;
@@ -91,6 +96,8 @@ private:
   bool m_doTaus;
   bool m_doJets;
   bool m_doSums;
+    bool m_doStubs;
+
   
   bool doText_;
   bool doHistos_;
@@ -105,7 +112,8 @@ private:
 		  MPEG=0x7,
 		  MPTau=0x8,
 		  MPJet=0x9,
-		  MPSum=0x10};
+		  MPSum=0x10,
+		  MPStub=0x11};
   
   std::vector< ObjectType > types_;
   std::vector< std::string > typeStr_;
@@ -143,6 +151,10 @@ private:
 
   // register what you consume and keep token for later access:
   edm::InputTag nullTag("None");
+
+  edm::InputTag stubTag = iConfig.getParameter<edm::InputTag>("stubToken");
+  m_stubToken         = consumes<l1t::StubBxCollection>(stubTag);
+  m_doStubs           = !(stubTag==nullTag);
 
   edm::InputTag towerTag = iConfig.getParameter<edm::InputTag>("towerToken");
   m_towerToken         = consumes<l1t::CaloTowerBxCollection>(towerTag);
@@ -194,6 +206,8 @@ private:
   types_.push_back( Tau );
   types_.push_back( Jet );
   types_.push_back( Sum );
+    types_.push_back( MPStub );
+
 
   typeStr_.push_back( "tower" );
   typeStr_.push_back( "cluster" );
@@ -205,6 +219,8 @@ private:
   typeStr_.push_back( "tau" );
   typeStr_.push_back( "jet" );
   typeStr_.push_back( "sum" );
+    typeStr_.push_back( "stub" );
+
 
 }
 
@@ -272,7 +288,10 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hratio_.at(Tower)->Fill( itr->hwEtRatio() );
         hetaphi_.at(Tower)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "Tower : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << " iem=" << itr->hwEtEm() << " ihad=" << itr->hwEtHad() << " iratio=" << itr->hwEtRatio() << std::endl;
+	text << "Tower : " << " BX=" << ibx << " ipt=" << itr->hwPt() <<
+	 " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << " iem=" 
+	 << itr->hwEtEm() << " ihad=" << itr->hwEtHad() << " iratio=" << 
+	 itr->hwEtRatio() << std::endl;
 	
 	if (doEvtDisp_) hEvtTow->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
@@ -295,7 +314,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   	heta_.at(Cluster)->Fill( itr->hwEta() );
   	hphi_.at(Cluster)->Fill( itr->hwPhi() );
         hetaphi_.at(Cluster)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
-	text << "Cluster : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
+	text << "Cluster : " << " BX=" << ibx << " ipt=" << itr->hwPt() << 
+	" ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
       }
 
     }
@@ -316,7 +336,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(MPEG)->Fill( itr->hwPhi() );
         hetaphi_.at(MPEG)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "MP EG : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;      
+	text << "MP EG : " << " BX=" << ibx << " ipt=" << itr->hwPt() 
+	<< " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;      
 
 	if (doEvtDisp_) hEvtMPEG->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
@@ -340,7 +361,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(MPTau)->Fill( itr->hwPhi() );
         hetaphi_.at(MPTau)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "MP Tau : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;      
+	text << "MP Tau : " << " BX=" << ibx << " ipt=" << itr->hwPt() 
+	<< " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;      
 
 	if (doEvtDisp_) hEvtMPTau->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
       }
@@ -349,6 +371,31 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     
   }
 
+//get stubs
+if (m_doStubs) {
+    Handle< BXVector<l1t::Stub> > mpstubs;
+    iEvent.getByToken(m_stubToken,mpstubs);
+    
+    for ( int ibx=mpstubs->getFirstBX(); ibx<=mpstubs->getLastBX(); ++ibx) {
+
+      for ( auto itr = mpstubs->begin(ibx); itr != mpstubs->end(ibx); ++itr ) {
+        hbx_.at(MPJet)->Fill( ibx );
+//	het_.at(MPJet)->Fill( itr->hwPt() );
+//	heta_.at(MPJet)->Fill( itr->hwEta() );
+//	hphi_.at(MPJet)->Fill( itr->hwPhi() );
+  //      hetaphi_.at(MPJet)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
+
+	text << "MP Stub: " << " BX=" << ibx << std::endl;
+	//" ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() <<
+	// " iphi=" << itr->hwPhi() << std::endl;
+
+	//if (doEvtDisp_) hEvtMStub->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
+      }
+      
+    }
+
+  }
+  
   // get jet
   if (m_doMPJets) {
     Handle< BXVector<l1t::Jet> > mpjets;
@@ -363,7 +410,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(MPJet)->Fill( itr->hwPhi() );
         hetaphi_.at(MPJet)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "MP Jet : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
+	text << "MP Jet : " << " BX=" << ibx << " ipt=" << itr->hwPt() <<
+	 " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
 
 	if (doEvtDisp_) hEvtMPJet->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
       }
@@ -386,7 +434,9 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(MPSum)->Fill( itr->hwPhi() );
         hetaphi_.at(MPSum)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "MP Sum : " << " type=" << itr->getType() << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
+	text << "MP Sum : " << " type=" << itr->getType()
+	<< " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta="
+	 << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
 
       }
 
@@ -408,7 +458,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(EG)->Fill( itr->hwPhi() );
         hetaphi_.at(EG)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "EG : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
+	text << "EG : " << " BX=" << ibx << " ipt=" << itr->hwPt()
+	 << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
 
 	if (doEvtDisp_) hEvtDemuxEG->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
       }
@@ -431,7 +482,8 @@ L1TStage2CaloAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	hphi_.at(Tau)->Fill( itr->hwPhi() );
         hetaphi_.at(Tau)->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
 
-	text << "Tau : " << " BX=" << ibx << " ipt=" << itr->hwPt() << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
+	text << "Tau : " << " BX=" << ibx << " ipt=" << itr->hwPt()
+	 << " ieta=" << itr->hwEta() << " iphi=" << itr->hwPhi() << std::endl;
 
 	if (doEvtDisp_) hEvtDemuxTau->Fill( itr->hwEta(), itr->hwPhi(), itr->hwPt() );
       }
@@ -511,21 +563,31 @@ L1TStage2CaloAnalyzer::beginJob()
     hbx_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("bx", "", 11, -5.5, 5.5) ));
 
     if (*itr==EG || *itr==Jet || *itr==Tau || *itr==Sum) {
-      heta_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("eta", "", 227, -113.5, 113.5) ));
-      hphi_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("phi", "", 144, -0.5, 143.5) ));
-      hetaphi_.insert( std::pair< ObjectType, TH2F* >(*itr, dirs_.at(*itr).make<TH2F>("etaphi", "", 227, -113.5, 113.5, 144, -0.5, 143.5) ));
+      heta_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("eta", "", 227, -113.5, 113.5) ));
+      hphi_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("phi", "", 144, -0.5, 143.5) ));
+      hetaphi_.insert( std::pair< ObjectType, TH2F* >(*itr, dirs_.at(*itr).make<TH2F>
+      ("etaphi", "", 227, -113.5, 113.5, 144, -0.5, 143.5) ));
     }
-    else if (*itr==Tower || *itr==Cluster || *itr==MPEG || *itr==MPJet || *itr==MPTau || *itr==MPSum) {
-      heta_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("eta", "", 83, -41.5, 41.5) ));
-      hphi_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("phi", "", 73, 0.5, 72.5) ));
-      hetaphi_.insert( std::pair< ObjectType, TH2F* >(*itr, dirs_.at(*itr).make<TH2F>("etaphi", "", 83, -41.5, 41.5, 72, .5, 72.5) ));
+    else if (*itr==Tower || *itr==Cluster || *itr==MPEG || *itr==MPJet || *itr==MPTau
+     || *itr==MPSum) {
+      heta_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("eta", "", 83, -41.5, 41.5) ));
+      hphi_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("phi", "", 73, 0.5, 72.5) ));
+      hetaphi_.insert( std::pair< ObjectType, TH2F* >(*itr, dirs_.at(*itr).make<TH2F>
+      ("etaphi", "", 83, -41.5, 41.5, 72, .5, 72.5) ));
 
     }
 
     if (*itr==Tower) {
-      hem_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("em", "", 101, -0.5, 100.5) ));
-      hhad_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("had", "", 101, -0.5, 100.5) ));
-      hratio_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>("ratio", "", 11, -0.5, 10.5) ));
+      hem_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("em", "", 101, -0.5, 100.5) ));
+      hhad_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("had", "", 101, -0.5, 100.5) ));
+      hratio_.insert( std::pair< ObjectType, TH1F* >(*itr, dirs_.at(*itr).make<TH1F>
+      ("ratio", "", 11, -0.5, 10.5) ));
     }
 
   }
@@ -561,7 +623,8 @@ L1TStage2CaloAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void 
-L1TStage2CaloAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+L1TStage2CaloAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, 
+edm::EventSetup const&)
 {
 }
 */
@@ -569,12 +632,14 @@ L1TStage2CaloAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::Ev
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void 
-L1TStage2CaloAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+L1TStage2CaloAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&,
+ edm::EventSetup const&)
 {
 }
 */
 
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+// ------------ method fills 'descriptions' with the allowed parameters 
+//for the module  ------------
 void
 L1TStage2CaloAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation

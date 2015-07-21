@@ -36,6 +36,8 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
+#include "DataFormats/L1Trigger/interface/Stub.h"
+
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
@@ -106,6 +108,8 @@ namespace l1t {
     edm::EDGetToken tauToken;
     edm::EDGetToken jetToken;
     edm::EDGetToken etsumToken;
+        edm::EDGetToken stubToken;
+
     
     int counter_;
 
@@ -133,6 +137,11 @@ namespace l1t {
     std::vector<l1t::EtSum> etsumVec_bxm1;
     std::vector<l1t::EtSum> etsumVec_bx0;
     std::vector<l1t::EtSum> etsumVec_bxp1;
+    
+    std::vector<l1t::Stub> stubVec_bxm2;
+    std::vector<l1t::Stub> stubVec_bxm1;
+    std::vector<l1t::Stub> stubVec_bx0;
+    std::vector<l1t::Stub> stubVec_bxp1;
 
   };
 
@@ -147,6 +156,8 @@ namespace l1t {
     tauToken   = consumes<BXVector<l1t::Tau>>(iConfig.getParameter<InputTag>("tauInputTag"));
     jetToken   = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
     etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
+    stubToken = consumes<BXVector<l1t::Stub>>(iConfig.getParameter<InputTag>("stubInputTag"));
+
   
     // register what you produce
     produces<BXVector<l1t::EGamma>>();
@@ -154,6 +165,8 @@ namespace l1t {
     produces<BXVector<l1t::Tau>>();
     produces<BXVector<l1t::Jet>>();
     produces<BXVector<l1t::EtSum>>();
+    produces<BXVector<l1t::Stub>>();
+
 
     // Setup parameters
     bxFirst_ = iConfig.getParameter<int>("bxFirst");
@@ -205,6 +218,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   std::vector<l1t::Tau> tauVec;
   std::vector<l1t::Jet> jetVec;
   std::vector<l1t::EtSum> etsumVec;
+    std::vector<l1t::Stub> stubVec;
+
 
   // Set the range of BX....TO DO...move to Params or determine from param set.
   int bxFirst = bxFirst_;
@@ -216,6 +231,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   std::auto_ptr<l1t::TauBxCollection> taus (new l1t::TauBxCollection(0, bxFirst, bxLast));
   std::auto_ptr<l1t::JetBxCollection> jets (new l1t::JetBxCollection(0, bxFirst, bxLast));
   std::auto_ptr<l1t::EtSumBxCollection> etsums (new l1t::EtSumBxCollection(0, bxFirst, bxLast));
+std::auto_ptr<l1t::StubBxCollection> stubs (new l1t::StubBxCollection(0, bxFirst, bxLast));
+
 
   std::vector<int> mu_cands_index;
   std::vector<int> eg_cands_index;
@@ -229,7 +246,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   Handle<BXVector<l1t::EGamma>> inputEgammas;
   if( iEvent.getByToken(egToken, inputEgammas) ){
    
-    for(std::vector<l1t::EGamma>::const_iterator eg = inputEgammas->begin(bx); eg != inputEgammas->end(bx); ++eg) {
+    for(std::vector<l1t::EGamma>::const_iterator eg = inputEgammas->begin(bx);
+     eg != inputEgammas->end(bx); ++eg) {
 
       if(eg->hwPt()>egEtThreshold_  && egammaVec.size() < maxNumEGCands_ ) {
          egammaVec.push_back((*eg));
@@ -245,7 +263,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   Handle<BXVector<l1t::Muon>> inputMuons;
   if( iEvent.getByToken(muToken,inputMuons) ){
    
-    for(std::vector<l1t::Muon>::const_iterator mu = inputMuons->begin(bx); mu != inputMuons->end(bx); ++mu) {
+    for(std::vector<l1t::Muon>::const_iterator mu = inputMuons->begin(bx); 
+    mu != inputMuons->end(bx); ++mu) {
 
       if(mu->hwPt()>muEtThreshold_  && muonVec.size() < maxNumMuCands_ ) {
          muonVec.push_back((*mu));
@@ -262,7 +281,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   Handle<BXVector<l1t::Tau>> inputTaus;
   if( iEvent.getByToken(tauToken, inputTaus) ){
    
-    for(std::vector<l1t::Tau>::const_iterator tau = inputTaus->begin(bx); tau != inputTaus->end(bx); ++tau) {
+    for(std::vector<l1t::Tau>::const_iterator tau = inputTaus->begin(bx);
+     tau != inputTaus->end(bx); ++tau) {
 
       if(tau->hwPt()>tauEtThreshold_  && tauVec.size() < maxNumTauCands_ ) {
          tauVec.push_back((*tau));
@@ -279,7 +299,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   Handle<BXVector<l1t::Jet>> inputJets;
   if( iEvent.getByToken(jetToken, inputJets) ){
    
-    for(std::vector<l1t::Jet>::const_iterator jet = inputJets->begin(bx); jet != inputJets->end(bx); ++jet) {
+    for(std::vector<l1t::Jet>::const_iterator jet = inputJets->begin(bx); 
+    jet != inputJets->end(bx); ++jet) {
 
       if(jet->hwPt()>jetEtThreshold_  && jetVec.size() < maxNumJetCands_ ) {
          jetVec.push_back((*jet));
@@ -296,7 +317,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   Handle<BXVector<l1t::EtSum>> inputEtsums;
   if( iEvent.getByToken(etsumToken, inputEtsums) ){
    
-    for(std::vector<l1t::EtSum>::const_iterator etsum = inputEtsums->begin(bx); etsum != inputEtsums->end(bx); ++etsum) {
+    for(std::vector<l1t::EtSum>::const_iterator etsum = 
+    inputEtsums->begin(bx); etsum != inputEtsums->end(bx); ++etsum) {
 
          etsumVec.push_back((*etsum));
 
@@ -308,7 +330,9 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
 
  
    // Insert all the bx into the L1 Collections
-   LogTrace("l1t|Global") << "Event " << eventCnt_ << " EmptyBxEvt " << emptyBxEvt_ << " emptyBxTrailer " <<  emptyBxTrailer_ << " diff " << (emptyBxEvt_ - eventCnt_) << std::endl;
+   LogTrace("l1t|Global") << "Event " << eventCnt_ << " EmptyBxEvt "
+    << emptyBxEvt_ << " emptyBxTrailer " <<  emptyBxTrailer_ << " diff "
+     << (emptyBxEvt_ - eventCnt_) << std::endl;
 
    
    // Fill Muons
@@ -331,6 +355,29 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
    } else {
      // this event is part of empty trailer...clear out data
      muonVec.clear();  
+   }  
+   
+   
+   //Fill Stubs
+   for( int iStub=0; iStub<int(stubVec_bxm2.size()); iStub++ ){
+     stubs->push_back(-2, stubVec_bxm2[iStub]);
+   }
+   for( int iStub=0; iStub<int(stubVec_bxm1.size()); iStub++ ){
+     stubs->push_back(-1, stubVec_bxm1[iStub]);
+   }
+   for( int iStub=0; iStub<int(stubVec_bx0.size()); iStub++ ){
+     stubs->push_back(0, stubVec_bx0[iStub]);
+   }
+   for( int iStub=0; iStub<int(stubVec_bxm1.size()); iStub++ ){
+     stubs->push_back(1, stubVec_bxm1[iStub]);
+   }
+   if(emptyBxTrailer_<=(emptyBxEvt_ - eventCnt_)) {
+   for( int iStub=0; iStub<int(stubVec.size()); iStub++ ){
+     stubs->push_back(2, stubVec[iStub]);
+     }
+   } else {
+     // this event is part of empty trailer...clear out data
+     stubVec.clear();  
    }  
 
    // Fill Egammas
@@ -427,6 +474,8 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   iEvent.put(taus);
   iEvent.put(jets);
   iEvent.put(etsums);
+    iEvent.put(stubs);
+
 
   // Now shift the bx data by one to prepare for next event.
   muonVec_bxm2 = muonVec_bxm1;
@@ -434,24 +483,32 @@ BXVectorInputProducer::produce(Event& iEvent, const EventSetup& iSetup)
   tauVec_bxm2 = tauVec_bxm1;
   jetVec_bxm2 = jetVec_bxm1;
   etsumVec_bxm2 = etsumVec_bxm1;
+    stubVec_bxm2 = stubVec_bxm1;
+
 
   muonVec_bxm1 = muonVec_bx0;
   egammaVec_bxm1 = egammaVec_bx0;
   tauVec_bxm1 = tauVec_bx0;
   jetVec_bxm1 = jetVec_bx0;
   etsumVec_bxm1 = etsumVec_bx0;
+    stubVec_bxm1 = stubVec_bx0;
+
 
   muonVec_bx0 = muonVec_bxp1;
   egammaVec_bx0 = egammaVec_bxp1;
   tauVec_bx0 = tauVec_bxp1;
   jetVec_bx0 = jetVec_bxp1;
   etsumVec_bx0 = etsumVec_bxp1;
+    stubVec_bx0 = stubVec_bxp1;
+
 
   muonVec_bxp1 = muonVec;
   egammaVec_bxp1 = egammaVec;
   tauVec_bxp1 = tauVec;
   jetVec_bxp1 = jetVec;
   etsumVec_bxp1 = etsumVec;
+stubVec_bxp1 = stubVec;
+
 
 }
 
