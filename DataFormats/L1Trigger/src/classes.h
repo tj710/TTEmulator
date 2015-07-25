@@ -1,3 +1,6 @@
+#ifndef DataFormats_L1TCalorimeter_classes_h
+#define DataFormats_L1TCalorimeter_classes_h
+
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
 #include "Rtypes.h"
 #include "Math/Cartesian3D.h"
@@ -29,6 +32,8 @@
 #include "DataFormats/L1Trigger/interface/Muon.h"
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/CaloSpare.h"
+#include "DataFormats/L1Trigger/interface/Stub.h"
+
 
 namespace DataFormats_L1Trigger {
   struct dictionary {
@@ -39,6 +44,8 @@ namespace DataFormats_L1Trigger {
     l1t::JetBxCollection    jetBxColl;
     l1t::MuonBxCollection   muonBxColl;
     l1t::TauBxCollection    tauBxColl;
+        l1t::StubBxCollection    stubBxColl;
+
     l1t::CaloSpareBxCollection caloSpareColl;
 
     edm::Wrapper<l1t::L1CandidateBxCollection> w_l1CandidateBxColl;
@@ -47,6 +54,8 @@ namespace DataFormats_L1Trigger {
     edm::Wrapper<l1t::JetBxCollection>    w_jetBxColl;
     edm::Wrapper<l1t::MuonBxCollection>   w_muonBxColl;
     edm::Wrapper<l1t::TauBxCollection>    w_tauBxColl;
+        edm::Wrapper<l1t::StubBxCollection>    w_stubBxColl;
+
     edm::Wrapper<l1t::CaloSpareBxCollection> w_caloSpareColl;
 
     l1extra::L1EmParticleCollection emColl ;
@@ -101,3 +110,5 @@ namespace DataFormats_L1Trigger {
     edm::Wrapper<L1TriggerErrorCollection> w_l1terr;
   };
 }
+
+#endif

@@ -5,7 +5,7 @@
 #include "DataFormats/L1Trigger/interface/BXVector.h"
 
 namespace l1t {
-  
+  class Cell;
   class Stub;
   typedef BXVector<Stub> StubBxCollection;
     typedef BXVector<Stub> OutStubBxCollection;
@@ -20,56 +20,55 @@ namespace l1t {
   
     
   Stub(
-               int S=0,
+               unsigned int S=0,
                int phiS=0,
                int rT=0,
                int z=0,
          int dphi=0,
-         int rho=0,
+        unsigned int rho=0,
          int dphi_reduced=0,
-         int m=0,
-         int c=0
+         unsigned int m_coordinate=0,
+         unsigned int c_coordinate=0
 
          );
     
   ~Stub();
 
-    void setS(int et) { S_ = et;}
+    void setS(unsigned int et) { S_ = et;}
   void setphiS( int et) { phiS_ = et;}
   void setrT( int et ) { rT_ = et;}
   void setz( int et ) { z_ = et;}
   void setdphi( int et ) { dphi_ = et;}
-  void setrho(int et) { rho_ = et;}
+  void setrho(unsigned int et) { rho_ = et;}
 void setdphi_reduced(int et) { dphi_reduced_ = et;}
-  void setm(int et) { m_ = et;}
-  void setc(int et) { c_ = et;}
+  void setm_coordinate(unsigned int et) { m_coordinate_ = et;}
+  void setc_coordinate(unsigned int et) { c_coordinate_ = et;}
 
 
-    int S()            const{   return S_;     }
+  unsigned  int S()            const{   return S_;     }
   int phiS()           const{   return phiS_;    }
   int rT()              const{   return rT_;       }
   int z()           const{   return z_;    }
   int dphi()             const{   return dphi_;      }
-  int rho()           const{   return rho_;     }
+ unsigned int rho()           const{   return rho_;     }
   int dphi_reduced()        const{   return dphi_reduced_; }
-  int m()            const{   return m_;     }
-int c()            const{   return c_;     }
+ unsigned int m_coordinate()            const{   return m_coordinate_;     }
+unsigned int c_coordinate()            const{   return c_coordinate_;     }
 
 
 
 
  private:
   
-    int S_;
-
+    unsigned S_;
   int phiS_;
   int rT_;
   int z_; 
   int dphi_;
-  int rho_;
+  unsigned rho_;
   int dphi_reduced_;
-  int m_;
-  int c_;
+  unsigned m_coordinate_;
+  unsigned c_coordinate_;
 
   
 };

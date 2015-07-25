@@ -4,15 +4,15 @@
 
 
 l1t::Stub::Stub(
-                                int S,
+                               unsigned int S,
                                 int phiS,
                                 int rT,
                                 int z,
         int dphi,
-        int rho,
+        unsigned int rho,
         int dphi_reduced,
-        int m,
-        int c
+       unsigned int m_coordinate,
+       unsigned int c_coordinate
 
                                 )
   : 
@@ -23,8 +23,8 @@ l1t::Stub::Stub(
     dphi_(dphi),
     rho_(rho),
     dphi_reduced_(dphi_reduced),
-    m_(m),
-    c_(c)
+    m_coordinate_(m_coordinate),
+    c_coordinate_(c_coordinate)
 
 {
   

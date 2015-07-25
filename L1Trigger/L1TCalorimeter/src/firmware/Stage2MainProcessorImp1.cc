@@ -25,7 +25,8 @@
 
 using namespace std;
 
-l1t::Stage2MainProcessorFirmwareImp1::Stage2MainProcessorFirmwareImp1(unsigned fwv, CaloParams* params) :
+l1t::Stage2MainProcessorFirmwareImp1::Stage2MainProcessorFirmwareImp1
+(unsigned fwv, CaloParams* params) :
   m_params(params)
 {
 

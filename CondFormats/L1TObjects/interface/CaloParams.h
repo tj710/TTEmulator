@@ -27,10 +27,15 @@ namespace l1t {
 
   public:
 
-    std::vector<int> MAxisMax;
+std::vector<int> MAxisMax;
 std::vector<int> MAxisMin;
+std::vector<int> MAxisMav;
+
 std::vector<int> CAxisMax;
 std::vector<int> CAxisMin;
+std::vector<int> CAxisMav;
+
+int T;
 
     enum { Version = 1 };
 

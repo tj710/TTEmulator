@@ -14,7 +14,10 @@
 
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 
-#include "DataFormats/L1Trigger/interface/Stub.h"
+//#include "DataFormats/L1Trigger/interface/Stub.h"
+
+#include "DataFormats/L1Trigger/interface/Cell.h"
+
 
 
 

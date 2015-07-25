@@ -23,7 +23,7 @@
 
 #include "CondFormats/L1TObjects/interface/CaloParams.h"
 
-#include "DataFormats/L1Trigger/interface/Stub.h"
+#include "DataFormats/L1Trigger/interface/Cell.h"
 
 
 
